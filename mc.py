@@ -4,7 +4,8 @@ import math
 import random
 from scipy.stats import norm
 
-S=K=100 #権利行使価格
+S=100
+K=100 #権利行使価格
 r=0.01 #リスクフリーレート
 q=0.03 #金利
 tend=1 #満期
