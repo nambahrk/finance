@@ -15,6 +15,17 @@ def default():
 
     return stock_price,strike,r,q,t_maturity,t,volatility
 
+def calling(sign,stock_price,strike,r,q,t_maturity,t,volatility,d1,d2):
+    return sign*stock_price*math.exp(q*t-q*t_maturity)*norm.cdf(x=sign*d1, loc=0, scale=1) \
+    -sign*strike*math.exp(r*t-r*t_maturity)*norm.cdf(x=sign*d2, loc=0, scale=1)
+
+def funcdelta(sign,stock_price,strike,r,q,t_maturity,t,volatility):      
+    h=0.000001 
+    d1=(math.log(stock_price/strike)+(r-q+volatility*volatility/2)*(t_maturity-t))/(volatility*math.sqrt(t_maturity-t))
+    d2=(math.log(stock_price/strike)+(r-q-volatility*volatility/2)*(t_maturity-t))/(volatility*math.sqrt(t_maturity-t))     
+    return (calling(sign,stock_price+h,strike,r,q,t_maturity,t,volatility,d1,d2) \
+            -calling(sign,stock_price-h,strike,r,q,t_maturity,t,volatility,d1,d2))/(2*h)
+
 
 def time(sign=1): #sign=1(call),sign=-1(put)
     stock_price,strike,r,q,t_maturity,t,volatility=default()
@@ -33,7 +44,8 @@ def time(sign=1): #sign=1(call),sign=-1(put)
             t_maturity = j/grid #maturity
             d1 = (math.log(stock_price/strike)+(r-q+volatility*volatility/2)*(t_maturity-t))/(volatility*math.sqrt(t_maturity-t))
             d2 = (math.log(stock_price/strike)+(r-q-volatility*volatility/2)*(t_maturity-t))/(volatility*math.sqrt(t_maturity-t))
-            callput_tmp = sign*stock_price*math.exp(q*t-q*t_maturity)*norm.cdf(x=sign*d1, loc=0, scale=1)-sign*strike*math.exp(r*t-r*t_maturity)*norm.cdf(x=sign*d2, loc=0, scale=1)
+            callput_tmp = sign*stock_price*math.exp(q*t-q*t_maturity)*norm.cdf(x=sign*d1, loc=0, scale=1) \
+            -sign*strike*math.exp(r*t-r*t_maturity)*norm.cdf(x=sign*d2, loc=0, scale=1)
             callput  = np.append(callput,callput_tmp)  #call or put price each stock price
         y= np.append(y, np.array([callput]),axis=0)  #y axis (call or put price)
 
@@ -76,7 +88,8 @@ def risk(sign=1): #sign=1(call),sign=-1(put)
             r=j/1000  #rate
             d1 = (math.log(stock_price/strike)+(r-q+volatility*volatility/2)*(t_maturity-t))/(volatility*math.sqrt(t_maturity-t))
             d2 = (math.log(stock_price/strike)+(r-q-volatility*volatility/2)*(t_maturity-t))/(volatility*math.sqrt(t_maturity-t))
-            callput_tmp = sign*stock_price*math.exp(q*t-q*t_maturity)*norm.cdf(x=sign*d1, loc=0, scale=1)-sign*strike*math.exp(r*t-r*t_maturity)*norm.cdf(x=sign*d2, loc=0, scale=1)
+            callput_tmp = sign*stock_price*math.exp(q*t-q*t_maturity)*norm.cdf(x=sign*d1, loc=0, scale=1) \
+            -sign*strike*math.exp(r*t-r*t_maturity)*norm.cdf(x=sign*d2, loc=0, scale=1)
             callput  = np.append(callput,callput_tmp)  #call or put price each stock price
         y= np.append(y, np.array([callput]),axis=0)  #y axis (call or put price)
 
@@ -119,7 +132,8 @@ def stock(sign=1): #sign=1(call),sign=-1(put)
             t_maturity=list[i]
             d1 = (math.log(stock_price/strike)+(r-q+volatility*volatility/2)*(t_maturity-t))/(volatility*math.sqrt(t_maturity-t))
             d2 = (math.log(stock_price/strike)+(r-q-volatility*volatility/2)*(t_maturity-t))/(volatility*math.sqrt(t_maturity-t))
-            callput_tmp = sign*stock_price*math.exp(q*t-q*t_maturity)*norm.cdf(x=sign*d1, loc=0, scale=1)-sign*strike*math.exp(r*t-r*t_maturity)*norm.cdf(x=sign*d2, loc=0, scale=1)
+            callput_tmp = sign*stock_price*math.exp(q*t-q*t_maturity)*norm.cdf(x=sign*d1, loc=0, scale=1) \
+            -sign*strike*math.exp(r*t-r*t_maturity)*norm.cdf(x=sign*d2, loc=0, scale=1)
             callput  = np.append(callput,callput_tmp)  #call or put price each stock price
         y= np.append(y, np.array([callput]),axis=0)  #y axis (call or put price)
 
@@ -165,11 +179,11 @@ def vol(sign=1): #sign=1(call),sign=-1(put)
             volatility=j/200
             d1 = (math.log(stock_price/strike)+(r-q+volatility*volatility/2)*(t_maturity-t))/(volatility*math.sqrt(t_maturity-t))
             d2 = (math.log(stock_price/strike)+(r-q-volatility*volatility/2)*(t_maturity-t))/(volatility*math.sqrt(t_maturity-t))
-            callput_tmp = sign*stock_price*math.exp(q*t-q*t_maturity)*norm.cdf(x=sign*d1, loc=0, scale=1)-sign*strike*math.exp(r*t-r*t_maturity)*norm.cdf(x=sign*d2, loc=0, scale=1)
+            callput_tmp = sign*stock_price*math.exp(q*t-q*t_maturity)*norm.cdf(x=sign*d1, loc=0, scale=1) \
+            -sign*strike*math.exp(r*t-r*t_maturity)*norm.cdf(x=sign*d2, loc=0, scale=1)
             callput  = np.append(callput,callput_tmp)  #call or put price each stock price
         y= np.append(y, np.array([callput]),axis=0)  #y axis (call or put price)
 
-        
     for j in range(1,1+grid):
         x= np.append(x, j/200)    #x axis (volatility)
 
@@ -211,7 +225,8 @@ def strike(sign=1): #sign=1(call),sign=-1(put)
             strike=j+50
             d1 = (math.log(stock_price/strike)+(r-q+volatility*volatility/2)*(t_maturity-t))/(volatility*math.sqrt(t_maturity-t))
             d2 = (math.log(stock_price/strike)+(r-q-volatility*volatility/2)*(t_maturity-t))/(volatility*math.sqrt(t_maturity-t))
-            callput_tmp = sign*stock_price*math.exp(q*t-q*t_maturity)*norm.cdf(x=sign*d1, loc=0, scale=1)-sign*strike*math.exp(r*t-r*t_maturity)*norm.cdf(x=sign*d2, loc=0, scale=1)
+            callput_tmp = sign*stock_price*math.exp(q*t-q*t_maturity)*norm.cdf(x=sign*d1, loc=0, scale=1) \
+            -sign*strike*math.exp(r*t-r*t_maturity)*norm.cdf(x=sign*d2, loc=0, scale=1)
             callput  = np.append(callput,callput_tmp)  #call or put price each stock price
         y= np.append(y, np.array([callput]),axis=0)  #y axis (call or put price)
 
@@ -239,8 +254,6 @@ def strike(sign=1): #sign=1(call),sign=-1(put)
 
 
 
-def calling(sign,stock_price,strike,r,q,t_maturity,t,volatility,d1,d2):
-    return sign*stock_price*math.exp(q*t-q*t_maturity)*norm.cdf(x=sign*d1, loc=0, scale=1)-sign*strike*math.exp(r*t-r*t_maturity)*norm.cdf(x=sign*d2, loc=0, scale=1)
 
 
 def delta(sign=1): #sign=1(call),sign=-1(put)
@@ -257,12 +270,14 @@ def delta(sign=1): #sign=1(call),sign=-1(put)
         for j in range(1,1+grid):
             stock_price=j+50
             t_maturity=list[i]
-            h = 0.001
+            h = 0.00001
             d1=(math.log(stock_price/strike)+(r-q+volatility*volatility/2)*(t_maturity-t))/(volatility*math.sqrt(t_maturity-t))
             d2=(math.log(stock_price/strike)+(r-q-volatility*volatility/2)*(t_maturity-t))/(volatility*math.sqrt(t_maturity-t))
 
-            call = (calling(sign,stock_price+h,strike,r,q,t_maturity,t,volatility,d1,d2)-calling(sign,stock_price-h,strike,r,q,t_maturity,t,volatility,d1,d2))/2*h
-            callput= np.append(callput,call) 
+            #call_tmp = (calling(sign,stock_price+h,strike,r,q,t_maturity,t,volatility,d1,d2) \
+            #-calling(sign,stock_price-h,strike,r,q,t_maturity,t,volatility,d1,d2))/(2*h)
+            callput_tmp = sign*np.exp(r*(t-t_maturity))*norm.cdf(x=sign*d1, loc=0, scale=1)
+            callput= np.append(callput,callput_tmp) 
 
         y= np.append(y, np.array([callput]),axis=0)
 
@@ -302,14 +317,13 @@ def gamma(sign=1): #sign=1(call),sign=-1(put)
         for j in range(1,1+grid):
             stock_price=j+50
             t_maturity=list[i]
-            h = 0.0001
+            h = 0.000001
             d1=(math.log(stock_price/strike)+(r-q+volatility*volatility/2)*(t_maturity-t))/(volatility*math.sqrt(t_maturity-t))
             d2=(math.log(stock_price/strike)+(r-q-volatility*volatility/2)*(t_maturity-t))/(volatility*math.sqrt(t_maturity-t))
 
-            #callput_tmp = (calling(stock_price+2*h)+calling(stock_price-2*h)-2*calling(stock_price))/4*h*h
-            #callput= np.append(callput,callput_tmp) 
-
-            call_tmp = (calling(sign,stock_price+2*h,strike,r,q,t_maturity,t,volatility,d1,d2)+calling(sign,stock_price-2*h,strike,r,q,t_maturity,t,volatility,d1,d2)-2*calling(sign,stock_price,strike,r,q,t_maturity,t,volatility,d1,d2))/2*h
+            #call_tmp = (funcdelta(sign,stock_price+h,strike,r,q,t_maturity,t,volatility) \
+            #-funcdelta(sign,stock_price-h,strike,r,q,t_maturity,t,volatility))/(2*h)
+            call_tmp = strike*np.exp(r*(t-t_maturity))*norm.cdf(x=d2, loc=0, scale=1)/(stock_price*stock_price*volatility*np.sqrt(t_maturity-t))
             callput= np.append(callput,call_tmp) 
 
         y= np.append(y, np.array([callput]),axis=0)
@@ -350,13 +364,16 @@ def vega(sign=1): #sign=1(call),sign=-1(put)
         for j in range(1,1+grid):
             stock_price=list[i]
             volatility=j/200
-            h = 0.00001
+            h = 0.0000001
             d1=(math.log(stock_price/strike)+(r-q+volatility*volatility/2)*(t_maturity-t))/(volatility*math.sqrt(t_maturity-t))
             d2=(math.log(stock_price/strike)+(r-q-volatility*volatility/2)*(t_maturity-t))/(volatility*math.sqrt(t_maturity-t))
 
-            callput_tmp = (calling(sign,stock_price+h,strike,r,q,t_maturity,t,volatility,d1,d2)-calling(sign,stock_price-h,strike,r,q,t_maturity,t,volatility,d1,d2))/2*h
-            callput= np.append(callput,callput_tmp) 
+            #callput_tmp = (calling(sign,stock_price,strike,r,q,t_maturity,t,volatility+h,d1,d2) \
+            #-calling(sign,stock_price,strike,r,q,t_maturity,t,volatility-h,d1,d2))/(2*h)
 
+            callput_tmp = strike*np.exp(r*(t-t_maturity))*norm.cdf(x=d2, loc=0, scale=1)*np.sqrt(t_maturity-t)
+            print(callput_tmp)
+            callput= np.append(callput,callput_tmp) 
         y= np.append(y, np.array([callput]),axis=0)
 
     for j in range(1,1+grid):
@@ -379,6 +396,102 @@ def vega(sign=1): #sign=1(call),sign=-1(put)
     plt.savefig("vega_"+name+".png")
     plt.clf()
 
+def theta(sign=1): #sign=1(call),sign=-1(put)
+    stock_price,strike,r,q,t_maturity,t,volatility=default()
+
+    list = np.linspace(70,130,7) #Stock price
+    
+    grid=100 #split
+
+    x = np.empty(0)
+    y = np.empty((0,grid)) 
+
+    for i in range(0,len(list)):
+        callput=np.empty(0)
+        for j in range(1,1+grid):
+            stock_price=list[i]
+            volatility=j/200
+            h = 0.00001
+            d1=(math.log(stock_price/strike)+(r-q+volatility*volatility/2)*(t_maturity-t))/(volatility*math.sqrt(t_maturity-t))
+            d2=(math.log(stock_price/strike)+(r-q-volatility*volatility/2)*(t_maturity-t))/(volatility*math.sqrt(t_maturity-t))
+
+            callput_tmp = (calling(sign,stock_price,strike,r,q,t_maturity+h,t,volatility,d1,d2) \
+            -calling(sign,stock_price,strike,r,q,t_maturity-h,t,volatility,d1,d2))/(2*h)
+            #callput_tmp = -np.exp(q*(t-t_maturity))*stock_price*norm.cdf(x=d1,loc=0, scale=1)*volatility/(2*np.sqrt(t_maturity-t))-sign*r*strike*np.exp(r*(t-t_maturity))*norm.cdf(x=sign*d2, loc=0, scale=1)+sign*q*stock_price*np.exp(-q*r)*norm.cdf(x=sign*d1, loc=0, scale=1)
+            callput= np.append(callput,callput_tmp) 
+
+        y= np.append(y, np.array([callput]),axis=0)
+
+    for j in range(1,1+grid):
+        x= np.append(x, j/grid) #x axis (maturity)
+
+    fig = plt.figure(figsize=(10, 5))
+    ax=fig.subplots()
+    ax.set_xlabel("time(yr)")
+    if sign == 1:
+        name = "call"
+    if sign == -1:
+        name = "put"    
+    ax.set_ylabel(str(name)+"theta")
+    ax.set_title(str(name) + 'option, r=' + str(r) + ', strike=' + str(strike) + ',sigma=' + str(volatility) + ',q=' + str(q))
+
+    for i in range(0,len(list)):   
+        z=y[i]   
+        plt.plot(x, z, label="stock_price="+ str(list[i]))
+    plt.legend()
+    plt.savefig("theta_"+name+".png")
+    plt.clf()
+
+
+def rho(sign=1): #sign=1(call),sign=-1(put)
+    stock_price,strike,r,q,t_maturity,t,volatility=default()
+
+    list = np.linspace(70,130,7) #Stock price
+    
+    grid=100 #split
+
+    x = np.empty(0)
+    y = np.empty((0,grid)) 
+
+    for i in range(0,len(list)):
+        callput=np.empty(0)
+        for j in range(1,1+grid):
+            stock_price=list[i]
+            volatility=j/200
+            h = 0.00001
+            d1=(math.log(stock_price/strike)+(r-q+volatility*volatility/2)*(t_maturity-t))/(volatility*math.sqrt(t_maturity-t))
+            d2=(math.log(stock_price/strike)+(r-q-volatility*volatility/2)*(t_maturity-t))/(volatility*math.sqrt(t_maturity-t))
+
+            callput_tmp = (calling(sign,stock_price,strike,r+h,q,t_maturity,t,volatility,d1,d2) \
+            -calling(sign,stock_price,strike,r-h,q,t_maturity,t,volatility,d1,d2))/(2*h)
+            #callput_tmp = sign*strike*(t_maturity-t)*np.exp(r*(t-t_maturity))*norm.cdf(x=sign*d2, loc=0, scale=1)
+            
+            callput= np.append(callput,callput_tmp) 
+
+        y= np.append(y, np.array([callput]),axis=0)
+
+    for j in range(1,1+grid):
+        x= np.append(x, j/1000)   #x axis (rate)
+
+    fig = plt.figure(figsize=(10, 5))
+    ax=fig.subplots()
+    ax.set_xlabel("risk free rate")
+    if sign == 1:
+        name = "call"
+    if sign == -1:
+        name = "put"    
+    ax.set_ylabel(str(name)+"rho")
+    ax.set_title(str(name) + 'option, strike=' + str(strike) + ',q=' + str(q) + ',T=' + str(t_maturity) + ',sigma=' + str(volatility) )
+        
+    for i in range(0,len(list)):   
+        z=y[i]   
+        plt.plot(x, z, label="stock_price="+ str(list[i]))
+    plt.legend()
+    plt.savefig("rho_"+name+".png")
+    plt.clf()
+
+
+
 """
 time(1)
 time(-1)
@@ -390,11 +503,20 @@ vol(1)
 vol(-1)
 strike(1)
 strike(-1)
-"""
 
 delta(1)
 delta(-1)
+
 gamma(1)
 gamma(-1)
+
+"""
+
 vega(1)
 vega(-1)
+"""
+theta(1)
+theta(-1)
+rho(1)
+rho(-1)
+"""
