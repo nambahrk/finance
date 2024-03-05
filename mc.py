@@ -5,14 +5,14 @@ import random
 from scipy.stats import norm
 
 S=100
-K=100 #権利行使価格
-r=0.01 #リスクフリーレート
-q=0.03 #金利
-tend=1 #満期
-t=0 #時間
-sig=0.2 #ボラティリティ
-m=100 #分割
-n=100000 #simulation数
+K=100 #strike
+r=0.01 #risk free rate
+q=0.03 #interest
+tend=1 #maturity
+t=0 #time
+sig=0.2 #volatility
+m=100 #divide
+n=100000 #number of simulation
 
 x1 = np.empty(0)
 y1 = np.empty(0)
@@ -22,7 +22,7 @@ call = np.empty(0)
 call_bs = np.empty(0)
 
 '''
-for i in range(1,n+1): #1-nのループ
+for i in range(1,n+1): 
     #sample=np.append(sample,sample[i-1]+r*sample[i-1]*deltat+sig*sample[i-1]*math.sqrt(deltat)*random.gauss(0,1))
     #sample = np.append(sample, sample[i-1]*math.exp((r-q-sig*sig/2)*deltat+sig*np.sqrt(deltat)*random.gauss(0,1)))
     rand=max(0, sample[i]-K)
