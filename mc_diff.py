@@ -4,14 +4,14 @@ import math
 import random
 from scipy.stats import norm
 
-S=K=100 #権利行使価格
-r=0.01 #リスクフリーレート
-q=0.03 #金利
-tend=1 #満期
-t=0 #時間
-sig=0.2 #ボラティリティ
-m=100 #分割
-n=100000 #simulation数
+S=K=100 #strike
+r=0.01 #risk free rate
+q=0.03 #interest
+tend=1 #maturity
+t=0 #time
+sig=0.2 #volatility
+m=100 #divide
+n=100000 #number of simulation
 
 x1,y1,sample,sample2,call,call_bs = np.empty(0)
 
